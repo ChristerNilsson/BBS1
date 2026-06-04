@@ -4,10 +4,10 @@
 	* Anmälan
 	* Lägg till flera deltagare
 
-* Stoppa anmälan, så vi inte riskera två olika uppfattningar om antal deltagare
+* Stoppa anmälan, så vi inte riskerar två olika uppfattningar om antal deltagare
 * Visa den publika sidan med deltagare.
 	* T ex https://member.schack.se/ShowTournamentServlet?id=17900
-	* Notera att denna sida försvinner när turneringen startats
+	* Notera att denna sida töms när turneringen startats
 
 * Kör Bookmarkleten BBS1
 	* Välj n=8
@@ -17,7 +17,9 @@
 	* Sätt GruppStorlek till 8
 	* Dela upp deltagarna i grupper
 
-* Schweizerturneringen kan nu startas
+* Schweizerturneringen kan nu startas i medlemssystemet.
+	* Välj den sista gruppen.
+	* Lotta
 
 * Kör länken till BBS2 du sparade nyss.
 	* Nu visas alla Bergerdeltagare
