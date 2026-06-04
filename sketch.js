@@ -1,3 +1,4 @@
+(function () {
 const ALLOWED_N = [4, 6, 8, 10, 12, 14, 16];
 const DEFAULT_N = 8;
 const VIEWER_URL = 'https://christernilsson.github.io/BBS2/';
@@ -172,6 +173,9 @@ function runBookmarklet() {
 
   let n = DEFAULT_N;
   const existing = document.getElementById('bbs-bookmarklet-panel');
+  if (typeof window.__bbsBookmarkletCleanup === 'function') {
+    window.__bbsBookmarkletCleanup();
+  }
   if (existing) existing.remove();
 
   const panel = document.createElement('div');
@@ -208,10 +212,12 @@ function runBookmarklet() {
     render();
   }
 
-  document.getElementById('bbs-bookmarklet-close').addEventListener('click', () => {
+  window.__bbsBookmarkletCleanup = () => {
     window.removeEventListener('keydown', onKeydown);
     panel.remove();
-  });
+    window.__bbsBookmarkletCleanup = null;
+  };
+  document.getElementById('bbs-bookmarklet-close').addEventListener('click', window.__bbsBookmarkletCleanup);
   window.addEventListener('keydown', onKeydown);
   render();
 }
@@ -221,3 +227,4 @@ if (window.location.hostname === 'member.schack.se') {
 } else {
   window.addEventListener('DOMContentLoaded', initViewer);
 }
+})();
