@@ -1,4 +1,4 @@
-# 119-BBS Gruppgenerator
+# BBS1 Bookmarklet
 
 Detta repo innehåller ett bookmarklet för schackturneringar samt en lokal testvy.
 
@@ -27,6 +27,8 @@ Exempel
 `index.html?turnering=Växjöspelen&n=4&players=1984 Adam Nilsson_0000 Helge Ågren`
 
 Bookmarklet
-Innehåll i `bookmarklet.txt` kan klistras som ett bokmärke. Den laddar `sketch.js` från GitHub Pages.
+Innehåll i `bookmarklet.txt` kan klistras som ett bokmärke. Den laddar:
+
+`https://christernilsson.github.io/BBS1/sketch.js`
 
 License: personlig/ej specificerad

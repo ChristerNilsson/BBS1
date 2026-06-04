@@ -190,9 +190,10 @@ function runBookmarklet() {
 
   function render() {
     const bergerPlayers = selectBergerPlayers(players, n);
-    const groupSizes = createGroups(players, n).groups.map(group => group.players.length).join(' + ');
+    const { groups, swiss } = createGroups(players, n);
+    const groupSizes = groups.map(group => group.players.length).join(' + ');
     const url = createViewerUrl(players, n, document.title);
-    status.innerHTML = `Valt n: <strong>${n}</strong>.<br>Tryck <strong>+</strong> för att öka n med 2 och <strong>-</strong> för att minska n med 2.<br>Gruppstorlekar: ${groupSizes}.<br>Deltagare: ${players.length}. Berger-spelare i länken: ${bergerPlayers.length}.`;
+    status.innerHTML = `Valt n: <strong>${n}</strong>.<br>Tryck <strong>+</strong> för att öka n med 2 och <strong>-</strong> för att minska n med 2.<br>Gruppstorlekar: ${groupSizes}.<br>d = ${players.length}. swiss = ${swiss}. Berger-spelare i länken: ${bergerPlayers.length}.`;
     link.href = url;
     link.textContent = url;
   }
@@ -214,12 +215,6 @@ function runBookmarklet() {
   window.addEventListener('keydown', onKeydown);
   render();
 }
-
-// if (window.location.hostname === 'halvarsson.no-ip.com') {
-//   runBookmarklet();
-// } else {
-//   window.addEventListener('DOMContentLoaded', initViewer);
-// }
 
 if (window.location.hostname === 'member.schack.se') {
   runBookmarklet();
