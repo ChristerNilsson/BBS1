@@ -11,7 +11,7 @@ Filer
 - `bookmarklet.txt` – bookmarklet-kod som du kan dra till bokmärkesfältet.
 
 Användning
-- Bookmarklet: besök turneringssidan och klicka bookmarkleten. Välj `n` med tangenterna `+` och `-`, och klicka sedan på länken till `https://christernilsson.github.io/BBS2/`.
+- Bookmarklet: besök turneringssidan och klicka bookmarkleten. Välj `n` med tangenterna `+` och `-`, och klicka sedan på länken till `https://christernilsson.github.io/BBS2/#...`.
 - Testvy: öppna `index.html` lokalt och ange parametern `players` i formatet:
   `?turnering=Växjöspelen&n=8&players=1984 Adam Nilsson_1954 Bertil Svensson_...`
 
