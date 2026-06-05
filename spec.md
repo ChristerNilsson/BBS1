@@ -39,6 +39,11 @@ Visa alltid vilket n som valts samt information om tangenterna.
 
 Visa även gruppstorlekarna, t ex 8 + 8 + 8 + 8 + 8 + 13
 
+Visa följande:
+Gruppstorlekar: 8 + 8 + 8 + 8 + 8 + 15 = 55
+
+d = 55. swiss = 7. Berger-spelare i länken: 40.
+
 d är antalet deltagare.
 
 swiss = d modulo n
@@ -48,6 +53,8 @@ Om swiss är 0 ska alla grupperna vara Berger
 Om swiss > 0 ska den sista gruppen plus den näst sista gruppen slås ihop och bilda en Schweizergrupp. Övriga blir Berger-grupper
 
 Exempel: d är 53. Det innebär att de sista tretton deltagarna går till Schweizergruppen och övriga 40 ska med i urlen längst ner i denna fil.
+
+Visa inte d, swiss och Berger-spelare i länken
 
 Schweizergruppen ska alltid vara större än n om den existerar.
 

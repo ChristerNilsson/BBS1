@@ -60,6 +60,11 @@ function selectBergerPlayers(players, n) {
   return swissSize === 0 ? players : players.slice(0, -swissSize);
 }
 
+function formatGroupSizes(groups) {
+  const sizes = groups.map(group => group.players.length);
+  return sizes.length === 0 ? '0 = 0' : `${sizes.join(' + ')} = ${sizes.reduce((sum, size) => sum + size, 0)}`;
+}
+
 function createViewerUrl(players, n, title, id) {
   const bergerPlayers = selectBergerPlayers(players, n);
   const params = new URLSearchParams();
@@ -81,10 +86,9 @@ function getTournamentId() {
 function renderGroups(players, n) {
   const output = document.getElementById('output');
   const status = document.getElementById('status');
-  const { groups, swiss } = createGroups(players, n);
-  const groupSizes = groups.map(group => group.players.length).join(' + ');
+  const { groups } = createGroups(players, n);
 
-  status.textContent = `n = ${n}. Tangenter: + ökar n med 2, - minskar n med 2. Gruppstorlekar: ${groupSizes || '-'}. Deltagare: ${players.length}. swiss = ${swiss}.`;
+  status.textContent = `n = ${n}. Tangenter: + ökar n med 2, - minskar n med 2. Gruppstorlekar: ${formatGroupSizes(groups)}.`;
 
   if (players.length === 0) {
     output.innerHTML = '<p>Inga deltagare hittades.</p>';
@@ -202,11 +206,9 @@ function runBookmarklet() {
   const tournamentId = getTournamentId();
 
   function render() {
-    const bergerPlayers = selectBergerPlayers(players, n);
-    const { groups, swiss } = createGroups(players, n);
-    const groupSizes = groups.map(group => group.players.length).join(' + ');
+    const { groups } = createGroups(players, n);
     const url = createViewerUrl(players, n, document.title, tournamentId);
-    status.innerHTML = `Valt n: <strong>${n}</strong>.<br>Tryck <strong>+</strong> för att öka n med 2 och <strong>-</strong> för att minska n med 2.<br>Gruppstorlekar: ${groupSizes}.<br>d = ${players.length}. swiss = ${swiss}. Berger-spelare i länken: ${bergerPlayers.length}.`;
+    status.innerHTML = `Valt n: <strong>${n}</strong>.<br>Tryck <strong>+</strong> f&ouml;r att &ouml;ka n med 2 och <strong>-</strong> f&ouml;r att minska n med 2.<br>Gruppstorlekar: ${formatGroupSizes(groups)}.`;
     link.href = url;
     link.textContent = url;
   }
