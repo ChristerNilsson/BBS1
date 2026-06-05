@@ -18,7 +18,7 @@ Denna bookmarklet behöver inte sortera, inte para. Sortering är redan gjord. P
 
 ### Input
 
-https://member.schack.se/ShowTournamentServlet?id=17900
+Primär url: https://member.schack.se/ShowTournamentServlet?id=17900
 
 Här hämtas deltagarnas Namn, Ranking samt Betalt och Avprickad
 
@@ -57,8 +57,11 @@ Om elo-talet har färre än fyra siffror ska nollutfyllnad ske. T ex 0 => 0000
 
 Exempel på url:
 
-https://christernilsson.github.io/BBS2/?turnering=Växjöspelen&n=4&players=1984 Adam Nilsson_1954 Bertil Svensson_1812 Cesar Persson_1776 David Eriksson_1912 Erik Karlsson_1917 Filip Jönsson_2026 Gustav Hansson_0000 Helge Ågren
+Sekundär url: https://christernilsson.github.io/BBS2/#id=17900&turnering=Växjöspelen&n=4&players=1984+Adam+Nilsson_1954+Bertil+Svensson_1812+Cesar+Persson_1776+David+Eriksson_1912+Erik+Karlsson_1917+Filip+Jönsson_2026+Gustav+Hansson_0000+Helge+Ågren
 
-Underscore ska alltid användas som avskiljare.
+Observera att id ska sättas till parametern id i den primära urlen.
+
+Underscore ska alltid användas som avskiljare.  
+Mellanslag skall alltid bytas ut mot +  
 
 Man måste klicka på urlen för att gå vidare.

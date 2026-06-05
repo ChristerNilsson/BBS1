@@ -1,7 +1,7 @@
 (function () {
 const ALLOWED_N = [4, 6, 8, 10, 12, 14, 16];
 const DEFAULT_N = 8;
-const VIEWER_URL = 'https://christernilsson.github.io/BBS2/';
+const VIEWER_URL = 'https://christernilsson.github.io/BBS2/#';
 
 function normalizeText(value) {
   return String(value || '').trim().replace(/\s+/g, ' ');
@@ -60,15 +60,22 @@ function selectBergerPlayers(players, n) {
   return swissSize === 0 ? players : players.slice(0, -swissSize);
 }
 
-function createViewerUrl(players, n, title) {
+function createViewerUrl(players, n, title, id) {
   const bergerPlayers = selectBergerPlayers(players, n);
-  const params = new URLSearchParams({
-    turnering: normalizeText(title),
-    n,
-    players: bergerPlayers.map(player => `${formatRanking(player.ranking)} ${player.name}`).join('_')
-  });
+  const params = new URLSearchParams();
+  if (id) params.set('id', id);
+  params.set('turnering', normalizeText(title));
+  params.set('n', n);
+  params.set(
+    'players',
+    bergerPlayers.map(player => `${formatRanking(player.ranking)} ${player.name}`).join('_')
+  );
 
-  return `${VIEWER_URL}?${params}`;
+  return `${VIEWER_URL}${params}`;
+}
+
+function getTournamentId() {
+  return new URLSearchParams(window.location.search).get('id') || '';
 }
 
 function renderGroups(players, n) {
@@ -105,7 +112,7 @@ function renderGroups(players, n) {
 }
 
 function initViewer() {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search || window.location.hash.slice(1));
   const players = parsePlayers(params.get('players'));
   const title = normalizeText(params.get('turnering')) || 'Gruppindelning';
   let n = ALLOWED_N.includes(Number(params.get('n'))) ? Number(params.get('n')) : DEFAULT_N;
@@ -185,18 +192,20 @@ function runBookmarklet() {
     <h1 style="margin-top:0">Bergergrupper</h1>
     <p id="bbs-bookmarklet-status"></p>
     <p><a id="bbs-bookmarklet-link"></a></p>
+    <p>Man m&aring;ste klicka p&aring; urlen f&ouml;r att g&aring; vidare.</p>
     <button id="bbs-bookmarklet-close" type="button">Stäng</button>
   `;
   document.body.appendChild(panel);
 
   const status = document.getElementById('bbs-bookmarklet-status');
   const link = document.getElementById('bbs-bookmarklet-link');
+  const tournamentId = getTournamentId();
 
   function render() {
     const bergerPlayers = selectBergerPlayers(players, n);
     const { groups, swiss } = createGroups(players, n);
     const groupSizes = groups.map(group => group.players.length).join(' + ');
-    const url = createViewerUrl(players, n, document.title);
+    const url = createViewerUrl(players, n, document.title, tournamentId);
     status.innerHTML = `Valt n: <strong>${n}</strong>.<br>Tryck <strong>+</strong> för att öka n med 2 och <strong>-</strong> för att minska n med 2.<br>Gruppstorlekar: ${groupSizes}.<br>d = ${players.length}. swiss = ${swiss}. Berger-spelare i länken: ${bergerPlayers.length}.`;
     link.href = url;
     link.textContent = url;
