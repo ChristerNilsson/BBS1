@@ -14,57 +14,29 @@ Koden i bokmärket ska se ut så här:
 
 javascript:(()=>{const s=document.createElement('script');s.src='https://christernilsson.github.io/BBS1/sketch.js';document.head.appendChild(s)})()
 
-Denna bookmarklet behöver inte sortera, inte para. Sortering är redan gjord. Parandet sker senare av ett annat program.
+Denna bookmarklet ska gå igenom alla grupperna och återvinna startordningen.
+
+Detta kan göras genom att ta fram startordningen med listingtype=3
+
+Om den sista gruppen har fler deltagare än övriga, ignoreras den
 
 ### Input
 
-Primär url: https://member.schack.se/ShowTournamentServlet?id=17900
+Primär url: https://member.schack.se/ShowTournamentServlet?id=16442
 
-Här hämtas deltagarnas Namn, Ranking samt Betalt och Avprickad
-
-Tag med alla deltagare oavsett värde på AVPRICKAD
-
-Deltagarna är redan sorterade.
-
-### Tangenter
-
-n är något av följande [4,6,8,10,12,14,16]
-
-`+` : öka n med 2
-`-` : Minska n med 2
+Här hämtas deltagarnas Namn och Ranking
 
 ### Output
 
-Visa alltid vilket n som valts samt information om tangenterna.
+Samla upp all deltagarna i startordning
 
-Visa även gruppstorlekarna, t ex 8 + 8 + 8 + 8 + 8 + 13
-
-Visa följande:
-Gruppstorlekar: 8 + 8 + 8 + 8 + 8 + 15 = 55
-
-d = 55. swiss = 7. Berger-spelare i länken: 40.
-
-d är antalet deltagare.
-
-swiss = d modulo n
-
-Om swiss är 0 ska alla grupperna vara Berger 
-
-Om swiss > 0 ska den sista gruppen plus den näst sista gruppen slås ihop och bilda en Schweizergrupp. Övriga blir Berger-grupper
-
-Exempel: d är 53. Det innebär att de sista tretton deltagarna går till Schweizergruppen och övriga 40 ska med i urlen längst ner i denna fil.
-
-Visa inte d, swiss och Berger-spelare i länken
-
-Schweizergruppen ska alltid vara större än n om den existerar.
-
-Schweizergruppen hanteras inte av denna bookmarklet.
+n = antal deltagare i en grupp
 
 Om elo-talet har färre än fyra siffror ska nollutfyllnad ske. T ex 0 => 0000
 
 Exempel på url:
 
-Sekundär url: https://christernilsson.github.io/BBS2/#id=17900&turnering=Växjöspelen&n=4&players=1984+Adam+Nilsson_1954+Bertil+Svensson_1812+Cesar+Persson_1776+David+Eriksson_1912+Erik+Karlsson_1917+Filip+Jönsson_2026+Gustav+Hansson_0000+Helge+Ågren
+Sekundär url: https://christernilsson.github.io/BBS2/#id=16442&turnering=Växjöspelen&n=4&players=1984+Adam+Nilsson_1954+Bertil+Svensson_1812+Cesar+Persson_1776+David+Eriksson_1912+Erik+Karlsson_1917+Filip+Jönsson_2026+Gustav+Hansson_0000+Helge+Ågren
 
 Observera att id ska sättas till parametern id i den primära urlen.
 
