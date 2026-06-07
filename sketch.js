@@ -20,6 +20,15 @@ function formatRanking(ranking) {
   return String(ranking).padStart(4, '0');
 }
 
+function encodeViewerParam(value) {
+  return Array.from(String(value)).map(char => {
+    if (char === ' ') return '+';
+    if (/^[A-Za-z0-9_.~-]$/.test(char)) return char;
+    if (char.codePointAt(0) > 0x7F) return char;
+    return encodeURIComponent(char);
+  }).join('');
+}
+
 function parsePlayers(value) {
   if (!value) return [];
 
@@ -48,16 +57,18 @@ function formatGroupIds(groups) {
 }
 
 function createViewerUrl(players, n, title, id) {
-  const params = new URLSearchParams();
-  if (id) params.set('id', id);
-  params.set('turnering', normalizeText(title));
-  params.set('n', n);
-  params.set(
+  const params = [];
+  if (id) params.push(['id', id]);
+  params.push(['turnering', normalizeText(title)]);
+  params.push(['n', n]);
+  params.push([
     'players',
     players.map(player => `${formatRanking(player.ranking)} ${player.name}`).join('_')
-  );
+  ]);
 
-  return `${VIEWER_URL}${params}`;
+  return `${VIEWER_URL}${params
+    .map(([key, value]) => `${key}=${encodeViewerParam(value)}`)
+    .join('&')}`;
 }
 
 function getTournamentId() {
