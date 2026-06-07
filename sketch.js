@@ -1,6 +1,5 @@
 (function () {
 const DEFAULT_N = 8;
-const EXPECTED_GROUPS = 14;
 const VIEWER_URL = 'https://christernilsson.github.io/BBS2/#';
 
 function normalizeText(value) {
@@ -140,7 +139,7 @@ function parsePlayersInStartOrder(doc) {
 }
 
 function getTournamentTitle(doc) {
-  const heading = doc.querySelector('h1, h2, h3');
+  const heading = doc.querySelector('h1, h2, h3, h4');
   return (normalizeText(heading?.textContent) || normalizeText(doc.title) || 'Turnering')
     .replace(/\s+grupp\s+\d+$/i, '');
 }
@@ -230,7 +229,6 @@ async function collectGroupsInStartOrder() {
   const primaryId = getTournamentId();
 
   for (const link of getGroupLinks(document)) {
-    if (groups.length === EXPECTED_GROUPS) break;
     const listingDoc = await fetchDocument(createListingUrl(link.url));
     const players = parsePlayersInStartOrder(listingDoc);
     if (players.length > 0) groups.push({ id: link.id, players });
@@ -261,14 +259,14 @@ async function runBookmarklet() {
   panel.id = 'bbs-bookmarklet-panel';
   panel.style.cssText = 'position:fixed;inset:1rem;z-index:2147483647;overflow:auto;padding:1.5rem;background:white;border:2px solid #222;box-shadow:0 4px 20px #0004;font:16px system-ui,sans-serif;color:#111';
   panel.innerHTML = `
-    <h1 style="margin-top:0">Bergergrupper</h1>
+    <h1 id="bbs-bookmarklet-title" style="margin-top:0">H&auml;mtar turnering...</h1>
     <p id="bbs-bookmarklet-status">H&auml;mtar startordning...</p>
     <p><a id="bbs-bookmarklet-link"></a></p>
-    <p>Man m&aring;ste klicka p&aring; urlen f&ouml;r att g&aring; vidare.</p>
     <button id="bbs-bookmarklet-close" type="button">St&auml;ng</button>
   `;
   document.body.appendChild(panel);
 
+  const title = document.getElementById('bbs-bookmarklet-title');
   const status = document.getElementById('bbs-bookmarklet-status');
   const link = document.getElementById('bbs-bookmarklet-link');
 
@@ -285,7 +283,8 @@ async function runBookmarklet() {
     }
 
     const url = createViewerUrl(state.players, state.n, state.title, state.id);
-    status.innerHTML = `n = <strong>${state.n}</strong>.<br>Grupper: ${formatGroupSizes(state.groups)}.<br>Deltagare: ${state.players.length}.`;
+    title.textContent = state.title;
+    status.innerHTML = `Antal deltagare per grupp: ${state.n}<br>Antal grupper: ${state.groups.length}`;
     link.href = url;
     link.textContent = url;
   } catch (error) {
