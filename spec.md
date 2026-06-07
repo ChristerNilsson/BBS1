@@ -28,13 +28,21 @@ Här hämtas deltagarnas Namn och Ranking
 
 ### Output
 
+Rubriken ska vara turneringens namn.
+
 n = antal deltagare i en grupp
 
-Gå igenom alla 14 grupper.
+Gå igenom alla grupper.
 
-Samla upp alla deltagare i startordning. Det blir n * 14 = 56 deltagare totalt
+Samla upp alla deltagare i startordning.
 
 Om elo-talet har färre än fyra siffror ska nollutfyllnad ske. T ex 0 => 0000
+
+Exempel på utdata:
+```
+Antal deltagare per grupp: 4
+Antal grupper: 13
+```
 
 Exempel på url:
 
@@ -45,4 +53,4 @@ Observera att id ska sättas till parametern id i den primära urlen.
 Underscore ska alltid användas som avskiljare.  
 Mellanslag skall alltid bytas ut mot +  
 
-Man måste klicka på urlen för att gå vidare.
+Texten "Man måste klicka på urlen för att gå vidare." ska ej skrivas ut.
