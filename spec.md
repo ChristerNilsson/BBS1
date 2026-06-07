@@ -28,9 +28,11 @@ Här hämtas deltagarnas Namn och Ranking
 
 ### Output
 
-Samla upp all deltagarna i startordning
-
 n = antal deltagare i en grupp
+
+Gå igenom alla 14 grupper.
+
+Samla upp alla deltagare i startordning. Det blir n * 14 = 56 deltagare totalt
 
 Om elo-talet har färre än fyra siffror ska nollutfyllnad ske. T ex 0 => 0000
 

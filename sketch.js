@@ -1,5 +1,6 @@
 (function () {
 const DEFAULT_N = 8;
+const EXPECTED_GROUPS = 14;
 const VIEWER_URL = 'https://christernilsson.github.io/BBS2/#';
 
 function normalizeText(value) {
@@ -140,7 +141,8 @@ function parsePlayersInStartOrder(doc) {
 
 function getTournamentTitle(doc) {
   const heading = doc.querySelector('h1, h2, h3');
-  return normalizeText(heading?.textContent) || normalizeText(doc.title) || 'Turnering';
+  return (normalizeText(heading?.textContent) || normalizeText(doc.title) || 'Turnering')
+    .replace(/\s+grupp\s+\d+$/i, '');
 }
 
 function getTournamentIdFromUrl(url) {
@@ -163,11 +165,44 @@ function uniqueBy(items, getKey) {
 
 function getGroupLinks(doc) {
   const current = new URL(window.location.href);
+  const groupLinks = [];
+
+  doc.querySelectorAll('[onclick]').forEach(element => {
+    const label = normalizeText(element.textContent);
+    const match = /^Gr(\d+)$/i.exec(label);
+    if (!match) return;
+
+    const hrefMatch = /ShowTournamentServlet\?id=\d+[^'"]*/.exec(element.getAttribute('onclick') || '');
+    if (!hrefMatch) return;
+
+    const url = new URL(hrefMatch[0], window.location.href);
+    groupLinks.push({
+      groupNumber: Number(match[1]),
+      id: url.searchParams.get('id') || '',
+      url: url.href
+    });
+  });
+
+  if (groupLinks.length > 0) {
+    return uniqueBy(
+      groupLinks.sort((a, b) => a.groupNumber - b.groupNumber),
+      link => link.id
+    );
+  }
+
   const links = [{ id: getTournamentIdFromUrl(current.href), url: current.href }];
 
   doc.querySelectorAll('a[href]').forEach(anchor => {
     const url = new URL(anchor.getAttribute('href'), window.location.href);
     if (!url.pathname.endsWith('/ShowTournamentServlet')) return;
+    links.push({ id: url.searchParams.get('id') || '', url: url.href });
+  });
+
+  doc.querySelectorAll('[onclick]').forEach(element => {
+    const hrefMatch = /ShowTournamentServlet\?id=\d+[^'"]*/.exec(element.getAttribute('onclick') || '');
+    if (!hrefMatch) return;
+
+    const url = new URL(hrefMatch[0], window.location.href);
     links.push({ id: url.searchParams.get('id') || '', url: url.href });
   });
 
@@ -192,8 +227,10 @@ async function fetchDocument(url) {
 
 async function collectGroupsInStartOrder() {
   const groups = [];
+  const primaryId = getTournamentId();
 
   for (const link of getGroupLinks(document)) {
+    if (groups.length === EXPECTED_GROUPS) break;
     const listingDoc = await fetchDocument(createListingUrl(link.url));
     const players = parsePlayersInStartOrder(listingDoc);
     if (players.length > 0) groups.push({ id: link.id, players });
@@ -205,7 +242,7 @@ async function collectGroupsInStartOrder() {
   }
 
   return {
-    id: groups[0]?.id || getTournamentId(),
+    id: primaryId,
     title: getTournamentTitle(document),
     n: firstSize,
     players: groups.flatMap(group => group.players),
