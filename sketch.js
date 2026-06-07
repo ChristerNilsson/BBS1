@@ -336,7 +336,6 @@ async function runBookmarklet() {
     <h1 id="bbs-bookmarklet-title" style="margin-top:0">H&auml;mtar turnering...</h1>
     <p id="bbs-bookmarklet-status">H&auml;mtar startordning...</p>
     <p><a id="bbs-bookmarklet-link"></a></p>
-    <button id="bbs-bookmarklet-close" type="button">St&auml;ng</button>
   `;
   document.body.appendChild(panel);
 
@@ -349,7 +348,6 @@ async function runBookmarklet() {
     panel.remove();
     window.__bbsBookmarkletCleanup = null;
   };
-  document.getElementById('bbs-bookmarklet-close').addEventListener('click', window.__bbsBookmarkletCleanup);
 
   try {
     const state = await collectGroupsInStartOrder();
@@ -367,7 +365,7 @@ async function runBookmarklet() {
       `Id: ${formatGroupIds(state.groups)}`
     ].join('<br>');
     link.href = url;
-    link.textContent = url;
+    link.textContent = 'Nästa';
   } catch (error) {
     restorePrimaryUrl(primaryId);
     status.textContent = `Kunde inte hämta startordningen: ${error.message}`;
