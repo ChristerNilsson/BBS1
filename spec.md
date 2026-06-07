@@ -40,6 +40,8 @@ n = antal deltagare i en grupp
 
 Gå igenom alla syskon.
 
+Visa syskonens id
+
 Samla upp alla deltagare i startordning.
 
 Om elo-talet har färre än fyra siffror ska nollutfyllnad ske. T ex 0 => 0000
@@ -48,6 +50,7 @@ Exempel på utdata:
 ```
 Antal deltagare per grupp: 8
 Antal grupper: 3
+Id: 16539 16540 16541
 ```
 
 Exempel på url:
