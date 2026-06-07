@@ -15,10 +15,14 @@ Koden i bokmärket ska se ut så här:
 javascript:(()=>{const s=document.createElement('script');s.src='https://christernilsson.github.io/BBS1/sketch.js';document.head.appendChild(s)})()
 
 Denna bookmarklet ska först hitta syskonen till given grupp. id numreras uppåt och man avbryter när antalet spelare avviker. Kontrollera att titlarna liknar varandra.  
+
 Exempel:  
 "Klass III 3 SM 2025" och "Klass III 4 SM 2025" är syskon.  
+Följande grupper är syskon: 16539 16540 16541 16542
 
-Följande grupper är syskon: 16539, 16540, 16541, 16542
+Exempel:  
+"Juniturneringen 2026 Grupp A Juniturneringen 2026" och "Juniturneringen 2026 Grupp B Juniturneringen 2026" är också syskon.  
+Följande grupper är syskon: 18719 18720 18721 18722 18723
 
 Gå igenom syskongruppen och återvinn startordningen.
 

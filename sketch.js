@@ -168,7 +168,8 @@ function getTournamentIdFromUrl(url) {
 function getSiblingTitleSignature(title) {
   return normalizeText(title)
     .toLowerCase()
-    .replace(/\d+/g, '#');
+    .replace(/\d+/g, '#')
+    .replace(/\b[a-zåäö]\b/g, '#');
 }
 
 function titleLooksLikeSibling(title, baseTitle) {
@@ -277,7 +278,13 @@ async function collectGroupsInStartOrder() {
   groups.push({ id: primaryId, title: firstTitle, players: firstPlayers });
 
   for (let id = Number(primaryId) + 1; id < Number(primaryId) + MAX_SIBLING_SCAN; id += 1) {
-    const listingDoc = await fetchDocument(createListingUrl(createTournamentUrl(id)));
+    let listingDoc;
+    try {
+      listingDoc = await fetchDocument(createListingUrl(createTournamentUrl(id)));
+    } catch {
+      break;
+    }
+
     const title = getTournamentTitle(listingDoc);
     if (!titleLooksLikeSibling(title, firstTitle)) break;
 
