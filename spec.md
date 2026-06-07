@@ -32,6 +32,8 @@ VIKTIGT: Startordningen ges av positionen i listan, inte av den första kolumnen
 
 Om den sista gruppen har ett annat antal deltagare än övriga, ignoreras den.
 
+Återställ primär url efter att loopat genom alla syskon.
+
 
 ### Exempel 1 Växjöspelen 2025
 

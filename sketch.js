@@ -257,6 +257,15 @@ function createTournamentUrl(id) {
   return url.href;
 }
 
+function restorePrimaryUrl(id) {
+  if (!id || !window.history?.replaceState) return;
+
+  const primaryUrl = createTournamentUrl(id);
+  if (window.location.href !== primaryUrl) {
+    window.history.replaceState(window.history.state, document.title, primaryUrl);
+  }
+}
+
 function parseDocument(html) {
   return new DOMParser().parseFromString(html, 'text/html');
 }
@@ -334,6 +343,7 @@ async function runBookmarklet() {
   const title = document.getElementById('bbs-bookmarklet-title');
   const status = document.getElementById('bbs-bookmarklet-status');
   const link = document.getElementById('bbs-bookmarklet-link');
+  const primaryId = getTournamentId();
 
   window.__bbsBookmarkletCleanup = () => {
     panel.remove();
@@ -343,6 +353,8 @@ async function runBookmarklet() {
 
   try {
     const state = await collectGroupsInStartOrder();
+    restorePrimaryUrl(state.id);
+
     if (state.players.length === 0 || state.n === 0) {
       throw new Error('Hittade inga deltagare i startordning.');
     }
@@ -357,6 +369,7 @@ async function runBookmarklet() {
     link.href = url;
     link.textContent = url;
   } catch (error) {
+    restorePrimaryUrl(primaryId);
     status.textContent = `Kunde inte hämta startordningen: ${error.message}`;
   }
 }
