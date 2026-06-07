@@ -1,5 +1,6 @@
 (function () {
 const DEFAULT_N = 8;
+const MAX_SIBLING_SCAN = 50;
 const VIEWER_URL = 'https://christernilsson.github.io/BBS2/#';
 
 function normalizeText(value) {
@@ -120,13 +121,29 @@ function parsePlayerTable(table) {
 
   if (nameIndex === -1 || rankingIndex === -1) return [];
 
-  return rows.slice(headerRowIndex + 1).map(row => {
+  const bodyRows = rows.slice(headerRowIndex + 1);
+  const startNumberIndex = Array.from({ length: nameIndex }, (_, index) => index)
+    .map(index => ({
+      index,
+      numericCells: bodyRows.filter(row => {
+        const cells = Array.from(row.querySelectorAll('td'));
+        return /^\d+$/.test(normalizeText(cells[index]?.textContent));
+      }).length
+    }))
+    .sort((a, b) => b.numericCells - a.numericCells)[0]?.index ?? -1;
+
+  return bodyRows.map(row => {
     const cells = Array.from(row.querySelectorAll('td'));
     return {
+      startNumber: Number(normalizeText(cells[startNumberIndex]?.textContent).replace(/[^\d-]/g, '')),
       name: normalizeText(cells[nameIndex]?.textContent),
       ranking: Number(normalizeText(cells[rankingIndex]?.textContent).replace(/[^\d-]/g, ''))
     };
-  }).filter(player => player.name && Number.isFinite(player.ranking));
+  }).filter(player =>
+    Number.isFinite(player.startNumber) &&
+    player.name &&
+    Number.isFinite(player.ranking)
+  );
 }
 
 function parsePlayersInStartOrder(doc) {
@@ -135,13 +152,15 @@ function parsePlayersInStartOrder(doc) {
     .filter(players => players.length > 0);
 
   if (tables.length === 0) return [];
-  return tables.sort((a, b) => b.length - a.length)[0];
+  return tables
+    .sort((a, b) => b.length - a.length)[0]
+    .sort((a, b) => a.startNumber - b.startNumber)
+    .map(({ name, ranking }) => ({ name, ranking }));
 }
 
 function getTournamentTitle(doc) {
   const heading = doc.querySelector('h1, h2, h3, h4');
-  return (normalizeText(heading?.textContent) || normalizeText(doc.title) || 'Turnering')
-    .replace(/\s+grupp\s+\d+$/i, '');
+  return normalizeText(heading?.textContent) || normalizeText(doc.title) || 'Turnering';
 }
 
 function getTournamentIdFromUrl(url) {
@@ -150,6 +169,16 @@ function getTournamentIdFromUrl(url) {
   } catch {
     return '';
   }
+}
+
+function getSiblingTitleSignature(title) {
+  return normalizeText(title)
+    .toLowerCase()
+    .replace(/\d+/g, '#');
+}
+
+function titleLooksLikeSibling(title, baseTitle) {
+  return getSiblingTitleSignature(title) === getSiblingTitleSignature(baseTitle);
 }
 
 function uniqueBy(items, getKey) {
@@ -214,6 +243,14 @@ function createListingUrl(url) {
   return listingUrl.href;
 }
 
+function createTournamentUrl(id) {
+  const url = new URL(window.location.href);
+  url.pathname = url.pathname.replace(/\/?$/, '').replace(/[^/]*$/, 'ShowTournamentServlet');
+  url.search = '';
+  url.searchParams.set('id', id);
+  return url.href;
+}
+
 function parseDocument(html) {
   return new DOMParser().parseFromString(html, 'text/html');
 }
@@ -227,21 +264,37 @@ async function fetchDocument(url) {
 async function collectGroupsInStartOrder() {
   const groups = [];
   const primaryId = getTournamentId();
+  const firstUrl = createListingUrl(window.location.href);
+  const firstDoc = await fetchDocument(firstUrl);
+  const firstTitle = getTournamentTitle(firstDoc);
+  const firstPlayers = parsePlayersInStartOrder(firstDoc);
+  const firstSize = firstPlayers.length;
 
-  for (const link of getGroupLinks(document)) {
-    const listingDoc = await fetchDocument(createListingUrl(link.url));
-    const players = parsePlayersInStartOrder(listingDoc);
-    if (players.length > 0) groups.push({ id: link.id, players });
+  if (!primaryId || firstSize === 0) {
+    return {
+      id: primaryId,
+      title: getTournamentTitle(document),
+      n: 0,
+      players: [],
+      groups
+    };
   }
 
-  const firstSize = groups[0]?.players.length || 0;
-  if (groups.length > 1 && groups.at(-1).players.length > firstSize) {
-    groups.pop();
+  groups.push({ id: primaryId, title: firstTitle, players: firstPlayers });
+
+  for (let id = Number(primaryId) + 1; id < Number(primaryId) + MAX_SIBLING_SCAN; id += 1) {
+    const listingDoc = await fetchDocument(createListingUrl(createTournamentUrl(id)));
+    const title = getTournamentTitle(listingDoc);
+    if (!titleLooksLikeSibling(title, firstTitle)) break;
+
+    const players = parsePlayersInStartOrder(listingDoc);
+    if (players.length !== firstSize) break;
+    groups.push({ id: String(id), title, players });
   }
 
   return {
     id: primaryId,
-    title: getTournamentTitle(document),
+    title: firstTitle,
     n: firstSize,
     players: groups.flatMap(group => group.players),
     groups
