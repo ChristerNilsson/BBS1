@@ -19,6 +19,7 @@ Besök en turneringssida, till exempel:
 Klicka på bookmarkleten. Den:
 
 - hämtar startordningen med `listingtype=3`
+- använder deltagarnas position i listan som startordning
 - hittar syskongrupper genom att öka id
 - avbryter när titel eller deltagarantal avviker
 - visar syskonens id, till exempel `Id: 16442 .. 16454`

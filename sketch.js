@@ -133,29 +133,13 @@ function parsePlayerTable(table) {
 
   if (nameIndex === -1 || rankingIndex === -1) return [];
 
-  const bodyRows = rows.slice(headerRowIndex + 1);
-  const startNumberIndex = Array.from({ length: nameIndex }, (_, index) => index)
-    .map(index => ({
-      index,
-      numericCells: bodyRows.filter(row => {
-        const cells = Array.from(row.querySelectorAll('td'));
-        return /^\d+$/.test(normalizeText(cells[index]?.textContent));
-      }).length
-    }))
-    .sort((a, b) => b.numericCells - a.numericCells)[0]?.index ?? -1;
-
-  return bodyRows.map(row => {
+  return rows.slice(headerRowIndex + 1).map(row => {
     const cells = Array.from(row.querySelectorAll('td'));
     return {
-      startNumber: Number(normalizeText(cells[startNumberIndex]?.textContent).replace(/[^\d-]/g, '')),
       name: normalizeText(cells[nameIndex]?.textContent),
       ranking: Number(normalizeText(cells[rankingIndex]?.textContent).replace(/[^\d-]/g, ''))
     };
-  }).filter(player =>
-    Number.isFinite(player.startNumber) &&
-    player.name &&
-    Number.isFinite(player.ranking)
-  );
+  }).filter(player => player.name && Number.isFinite(player.ranking));
 }
 
 function parsePlayersInStartOrder(doc) {
@@ -166,8 +150,6 @@ function parsePlayersInStartOrder(doc) {
   if (tables.length === 0) return [];
   return tables
     .sort((a, b) => b.length - a.length)[0]
-    .sort((a, b) => a.startNumber - b.startNumber)
-    .map(({ name, ranking }) => ({ name, ranking }));
 }
 
 function getTournamentTitle(doc) {
