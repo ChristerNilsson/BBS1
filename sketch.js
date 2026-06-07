@@ -337,7 +337,11 @@ async function runBookmarklet() {
 
     const url = createViewerUrl(state.players, state.n, state.title, state.id);
     title.textContent = state.title;
-    status.innerHTML = `Antal deltagare per grupp: ${state.n}<br>Antal grupper: ${state.groups.length}`;
+    status.innerHTML = [
+      `Antal deltagare per grupp: ${state.n}`,
+      `Antal grupper: ${state.groups.length}`,
+      `Id: ${state.groups.map(group => group.id).join(' ')}`
+    ].join('<br>');
     link.href = url;
     link.textContent = url;
   } catch (error) {
