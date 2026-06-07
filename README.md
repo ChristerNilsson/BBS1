@@ -21,7 +21,7 @@ Klicka på bookmarkleten. Den:
 - hämtar startordningen med `listingtype=3`
 - hittar syskongrupper genom att öka id
 - avbryter när titel eller deltagarantal avviker
-- visar syskonens id
+- visar syskonens id, till exempel `Id: 16442 .. 16454`
 - skapar en `BBS2`-url med `id`, `turnering`, `n` och `players`
 
 Ranking nollutfylls till minst fyra siffror, till exempel `0000`.

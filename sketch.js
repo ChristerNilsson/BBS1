@@ -35,6 +35,18 @@ function formatGroupSizes(groups) {
   return sizes.length === 0 ? '0 = 0' : `${sizes.join(' + ')} = ${sizes.reduce((sum, size) => sum + size, 0)}`;
 }
 
+function formatGroupIds(groups) {
+  const ids = groups.map(group => Number(group.id));
+  const hasOnlyNumericIds = ids.every(Number.isFinite);
+  const isConsecutive = ids.every((id, index) => index === 0 || id === ids[index - 1] + 1);
+
+  if (ids.length > 2 && hasOnlyNumericIds && isConsecutive) {
+    return `${ids[0]} .. ${ids.at(-1)}`;
+  }
+
+  return groups.map(group => group.id).join(' ');
+}
+
 function createViewerUrl(players, n, title, id) {
   const params = new URLSearchParams();
   if (id) params.set('id', id);
@@ -340,7 +352,7 @@ async function runBookmarklet() {
     status.innerHTML = [
       `Antal deltagare per grupp: ${state.n}`,
       `Antal grupper: ${state.groups.length}`,
-      `Id: ${state.groups.map(group => group.id).join(' ')}`
+      `Id: ${formatGroupIds(state.groups)}`
     ].join('<br>');
     link.href = url;
     link.textContent = url;
